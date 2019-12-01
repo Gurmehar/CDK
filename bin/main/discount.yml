@@ -1,0 +1,16 @@
+  discounts:
+  - 
+      customerType: "Regular"
+      lowerBound: 0
+      upperBound: 5000
+      iDiscount: 0
+  - 
+      customerType: "Regular"
+      lowerBound: 5000
+      upperBound: 10000
+      iDiscount: 10
+  -  
+      customerType: "Regular"
+      lowerBound: 1000
+      upperBound: 
+      iDiscount: 20
