@@ -11,6 +11,6 @@
       iDiscount: 10
   -  
       customerType: "Regular"
-      lowerBound: 1000
+      lowerBound: 10000
       upperBound: 
       iDiscount: 20

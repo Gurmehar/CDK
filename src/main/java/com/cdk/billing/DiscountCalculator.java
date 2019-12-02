@@ -1,26 +1,40 @@
 package com.cdk.billing;
 
 import java.util.List;
-import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import com.cdk.billing.entity.Discount;
 import com.cdk.billing.entity.enums.CustomerType;
 
 @Service
 public class DiscountCalculator {
-  
-  public Long getDiscountedBill(CustomerType customerType,Long bill,List<Discount> _list) {
+  private static final Logger LOG = LogManager.getLogger(DiscountCalculator.class);
+  public Float getDiscountedBill(CustomerType customerType,float bill,List<Discount> _list) {
+    float discountedBill=bill;
+    long discountAmount=0L;
     
-    Optional<Discount> findFirst = _list.parallelStream().filter(p ->p.getCustomerType().equals(customerType))
-    .filter(p-> p.getLowerBound()<=bill)
-    .filter(p->p.getUpperBound()>=bill).findFirst();
-    if(findFirst.isPresent()) {
-      Discount discount=findFirst.get();
-      return ((long) (bill- ((bill * discount.getiDiscount())/100)));
+    
+   for(Discount dis:_list) {
+    if(customerType.equals(dis.getCustomerType())) {
+      if(bill>dis.getUpperBound()) {
+        discountAmount+=getDiscountedAmount((dis.getUpperBound()-dis.getLowerBound()),dis.getiDiscount());
+      }else  {
+        discountAmount+=getDiscountedAmount( bill-dis.getLowerBound(),dis.getiDiscount());
+        break;
+      }
     }
-    return bill;
+   }
+   discountedBill-=discountAmount;
+   LOG.info(" values of discount is{}, final amount is {} ::  {}",discountAmount,discountAmount);
+    return discountedBill;
     
     
+  }
+
+  private float getDiscountedAmount(float amount, float discount) {
+    LOG.info("amount is {} and discount is {}",amount,discount);
+    return  ((amount*discount)/100);
   }
   
 }
